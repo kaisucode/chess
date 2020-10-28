@@ -4,7 +4,16 @@
 
 // #include "ChessPiece.h"
 #include "Board.h"
+#include "ResourceHolder.h"
 using namespace std;
+
+namespace Textures
+{
+	enum ID
+	{
+		black_pawn,
+	};
+}
 
 int main()
 {
@@ -13,6 +22,15 @@ int main()
 
 	// load board
 	Board board = Board();
+
+	ResourceHolder<sf::Texture, Textures::ID> textures;
+	// textures.load("black_pawn", "assets/black_pawn.png");
+	textures.load(Textures::black_pawn, "assets/black_pawn.png");
+	// this->texture.loadFromFile("assets/black_knight.png");
+	// this->sprite.setTexture(this->texture);
+	//
+	sf::Sprite black_pawn(textures.get(Textures::black_pawn));
+
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -30,16 +48,18 @@ int main()
 
         // draw everything here...
 		window.draw(board.sprite);
+		window.draw(black_pawn);
 
-		std::map<string, ChessPiece>::iterator it = board.black_pieces.find("black_knight");
-		if(it != board.black_pieces.end()){
+		// std::map<string, ChessPiece>::iterator it = board.black_pieces.find("black_knight");
+
+		// if(it != board.black_pieces.end()){
 			// cout << it.pos.x << " " << it.pos.y << endl;
 			// (*it)
-			window.draw(board.black_pieces.find("black_knight")->second.sprite);
-		}
-		else{
-			cout << "oops" << endl;
-		}
+			// window.draw(board.black_pieces.find("black_knight")->second.sprite);
+		// }
+		// else{
+		//     cout << "oops" << endl;
+		// }
 		// window.draw(board.black_pieces[0].sprite);
 	// this->black_pieces.insert(pair<string, ChessPiece>("black_knight", black_knight));
 
