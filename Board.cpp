@@ -5,7 +5,17 @@
 using namespace std;
 
 // #include "ChessPiece.h"
+#include "ResourceHolder.h"
 #include "Board.h"
+
+
+namespace Textures
+{
+	enum ID
+	{
+		black_pawn,
+	};
+}
 
 Board::Board(){
 	this->texture.loadFromFile("assets/board.png");

@@ -24,13 +24,9 @@ int main()
 	Board board = Board();
 
 	ResourceHolder<sf::Texture, Textures::ID> textures;
-	// textures.load("black_pawn", "assets/black_pawn.png");
 	textures.load(Textures::black_pawn, "assets/black_pawn.png");
-	// this->texture.loadFromFile("assets/black_knight.png");
-	// this->sprite.setTexture(this->texture);
-	//
 	sf::Sprite black_pawn(textures.get(Textures::black_pawn));
-
+	black_pawn.setPosition(200, 200);
 
     // run the program as long as the window is open
     while (window.isOpen())
