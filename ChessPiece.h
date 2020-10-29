@@ -5,7 +5,9 @@ struct Position{
 
 class ChessPiece{
 	public: 
-		Position pos;
+		bool is_occupied;
 		int player;
-		ChessPiece(int player, int x, int y);
+		std::string piece;
+		ChessPiece();
+		ChessPiece(int player, std::string piece);
 };

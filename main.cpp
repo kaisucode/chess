@@ -2,29 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-// #include "ChessPiece.h"
 #include "Board.h"
 #include "ResourceHolder.h"
 using namespace std;
-
-namespace Textures
-{
-	enum ID
-	{
-		black_king,
-		black_queen,
-		black_bishop,
-		black_knight,
-		black_rook,
-		black_pawn,
-		white_king,
-		white_queen,
-		white_bishop,
-		white_knight,
-		white_rook,
-		white_pawn,
-	};
-}
 
 int main()
 {
@@ -74,13 +54,24 @@ int main()
         // draw everything here...
 		window.draw(board.sprite);
 
-		sprite_map["white_pawn"].setPosition(200, 200);
-		window.draw(sprite_map["white_pawn"]);
+		for(int row = 0; row < 8; row++){
+			for(int col = 0; col < 8; col++){
+				if(board.grid[row][col].is_occupied)
+				{
+					string piece = board.grid[row][col].piece;
+					sprite_map[piece].setPosition(col*22 + 4, row*22 + 4);
+					window.draw(sprite_map[piece]);
+				}
+			}
+		}
 
-		sprite_map["white_pawn"].setPosition(500, 200);
-		window.draw(sprite_map["white_pawn"]);
+		// sprite_map["white_pawn"].setPosition(200, 200);
+		// window.draw(sprite_map["white_pawn"]);
 
-		window.draw(sprite_map["white_queen"]);
+		// sprite_map["white_pawn"].setPosition(500, 200);
+		// window.draw(sprite_map["white_pawn"]);
+
+		// window.draw(sprite_map["white_queen"]);
 
 		// std::map<string, ChessPiece>::iterator it;
 		// for(it = board.black_pieces.begin(); it != board.black_pieces.end(); it++)

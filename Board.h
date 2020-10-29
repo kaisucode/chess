@@ -3,6 +3,6 @@ class Board{
 	public: 
 		sf::Sprite sprite;
 		sf::Texture texture;
-		std::map<std::string, ChessPiece> black_pieces;
+		std::vector<std::vector<ChessPiece>> grid;
 		Board();
 };

@@ -2,12 +2,16 @@
 #include <iostream>
 
 #include "ChessPiece.h"
-using namespace std;
+
+ChessPiece::ChessPiece(){
+	this->is_occupied = false;
+}
 
 // 0 is white
 // 1 is black
-ChessPiece::ChessPiece(int player, int x, int y){
-	this->pos = {x, y};
+ChessPiece::ChessPiece(int player, std::string piece){
+	this->is_occupied = true;
 	this->player = player;
+	this->piece = piece;
 }
 
