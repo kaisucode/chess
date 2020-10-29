@@ -28,39 +28,31 @@ namespace Textures
 
 int main()
 {
+	vector<string> chess_piece_names = {"king", "queen", "bishop", "knight", "rook", "pawn"};
+	vector<string> white_pieces, black_pieces;
+	for(int i = 0; i < chess_piece_names.size(); i++)
+	{
+		string white_new_name = "white_" + chess_piece_names[i];
+		string black_new_name = "black_" + chess_piece_names[i];
+		white_pieces.push_back(white_new_name);
+		black_pieces.push_back(black_new_name);
+	}
+
     // create the window
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
 	// create a central resource manager
-	ResourceHolder<sf::Texture, Textures::ID> textures;
+	ResourceHolder<sf::Texture, string> textures;
+	std::map<string, sf::Sprite> sprite_map;
 
-	textures.load(Textures::black_king, "assets/black_king.png");
-	textures.load(Textures::black_queen, "assets/black_queen.png");
-	textures.load(Textures::black_bishop, "assets/black_bishop.png");
-	textures.load(Textures::black_knight, "assets/black_knight.png");
-	textures.load(Textures::black_rook, "assets/black_rook.png");
-	textures.load(Textures::black_pawn, "assets/black_pawn.png");
+	for(int i = 0; i < chess_piece_names.size(); i++)
+	{
+		textures.load(white_pieces[i], "assets/" + white_pieces[i] + ".png");
+		textures.load(black_pieces[i], "assets/" + black_pieces[i] + ".png");
 
-	textures.load(Textures::white_king, "assets/white_king.png");
-	textures.load(Textures::white_queen, "assets/white_queen.png");
-	textures.load(Textures::white_bishop, "assets/white_bishop.png");
-	textures.load(Textures::white_knight, "assets/white_knight.png");
-	textures.load(Textures::white_rook, "assets/white_rook.png");
-	textures.load(Textures::white_pawn, "assets/white_pawn.png");
-
-	sf::Sprite black_king(textures.get(Textures::black_king));
-	sf::Sprite black_queen(textures.get(Textures::black_queen));
-	sf::Sprite black_bishop(textures.get(Textures::black_bishop));
-	sf::Sprite black_knight(textures.get(Textures::black_knight));
-	sf::Sprite black_rook(textures.get(Textures::black_rook));
-	sf::Sprite black_pawn(textures.get(Textures::black_pawn));
-
-	sf::Sprite white_king(textures.get(Textures::white_king));
-	sf::Sprite white_queen(textures.get(Textures::white_queen));
-	sf::Sprite white_bishop(textures.get(Textures::white_bishop));
-	sf::Sprite white_knight(textures.get(Textures::white_knight));
-	sf::Sprite white_rook(textures.get(Textures::white_rook));
-	sf::Sprite white_pawn(textures.get(Textures::white_pawn));
+		sprite_map.insert(pair<string, sf::Sprite>(white_pieces[i], textures.get(white_pieces[i])));
+		sprite_map.insert(pair<string, sf::Sprite>(black_pieces[i], textures.get(black_pieces[i])));
+	}
 
 	// load board
 	Board board = Board();
@@ -82,13 +74,13 @@ int main()
         // draw everything here...
 		window.draw(board.sprite);
 
-		black_pawn.setPosition(200, 200);
-		window.draw(black_pawn);
+		sprite_map["white_pawn"].setPosition(200, 200);
+		window.draw(sprite_map["white_pawn"]);
 
-		black_pawn.setPosition(500, 200);
-		window.draw(black_pawn);
+		sprite_map["white_pawn"].setPosition(500, 200);
+		window.draw(sprite_map["white_pawn"]);
 
-		window.draw(black_queen);
+		window.draw(sprite_map["white_queen"]);
 
 		// std::map<string, ChessPiece>::iterator it;
 		// for(it = board.black_pieces.begin(); it != board.black_pieces.end(); it++)
