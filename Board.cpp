@@ -5,24 +5,19 @@
 using namespace std;
 
 // #include "ChessPiece.h"
-#include "ResourceHolder.h"
 #include "Board.h"
-
-
-namespace Textures
-{
-	enum ID
-	{
-		black_pawn,
-	};
-}
 
 Board::Board(){
 	this->texture.loadFromFile("assets/board.png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setPosition(200, 200);
 
-	ChessPiece black_knight("assets/black_knight.png", 0, 3, 4);
-	this->black_pieces.insert(pair<string, ChessPiece>("black_knight", black_knight));
+	this->black_pieces.insert(pair<string, ChessPiece>("black_rook_1", ChessPiece(1, 1, 0)));
+	this->black_pieces.insert(pair<string, ChessPiece>("black_knight_1", ChessPiece(1, 1, 0)));
+
+	// ResourceHolder<sf::Texture, Textures::ID> textures;
+	// textures.load(Textures::black_pawn, "assets/black_pawn.png");
+	// sf::Sprite black_pawn(textures.get(Textures::black_pawn));
+
 }
 
