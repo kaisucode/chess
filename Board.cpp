@@ -9,6 +9,7 @@ using namespace std;
 Board::Board(){
 	this->texture.loadFromFile("assets/board.png");
 	this->sprite.setTexture(this->texture);
+	this->sprite.setScale(3, 3);
 
 	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
 	for(int row = 0; row < 8; row++)

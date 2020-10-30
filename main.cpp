@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+#include "GlobalVars.h"
 #include "Board.h"
 #include "ResourceHolder.h"
 using namespace std;
@@ -19,7 +20,7 @@ int main()
 	}
 
     // create the window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
 	// create a central resource manager
 	ResourceHolder<sf::Texture, string> textures;
@@ -30,12 +31,23 @@ int main()
 		textures.load(white_pieces[i], "assets/" + white_pieces[i] + ".png");
 		textures.load(black_pieces[i], "assets/" + black_pieces[i] + ".png");
 
+		// textures.get(white_pieces[i]).setScale(3, 3);
+		// textures.get(black_pieces[i]).setScale(3, 3);
+
 		sprite_map.insert(pair<string, sf::Sprite>(white_pieces[i], textures.get(white_pieces[i])));
 		sprite_map.insert(pair<string, sf::Sprite>(black_pieces[i], textures.get(black_pieces[i])));
+
+		sprite_map[white_pieces[i]].setScale(SCALE, SCALE);
+		sprite_map[black_pieces[i]].setScale(SCALE, SCALE);
 	}
 
 	// load board
 	Board board = Board();
+
+
+	sf::RectangleShape rectangle(sf::Vector2f(22*SCALE, 22*SCALE));
+	rectangle.setFillColor(sf::Color(100, 250, 50));
+	rectangle.setPosition(6, 6);
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -57,13 +69,18 @@ int main()
 			for(int col = 0; col < 8; col++){
 				if(board.grid[row][col].is_occupied)
 				{
-					string piece = board.grid[row][col].piece;
-					sprite_map[piece].setPosition(col*22 + 4, row*22 + 4);
-					window.draw(sprite_map[piece]);
+					string name = board.grid[row][col].name;
+
+					int col_spacing = MARGINS + SCALE * (col*22 + 3);
+					int row_spacing = MARGINS + SCALE * (row*22 + 3);
+
+					sprite_map[name].setPosition(col_spacing, row_spacing);
+					window.draw(sprite_map[name]);
 				}
 			}
 		}
 
+		window.draw(rectangle);
         // end the current frame
         window.display();
     }
