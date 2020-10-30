@@ -104,20 +104,20 @@ int main()
                 window.close();
         }
 
-        // clear the window with black color
         window.clear(sf::Color::Black);
-
-        // draw everything here...
 		window.draw(board.sprite);
 		renderPieces(window, board, spriteMap);
+		sf::Vector2i mouseCell = coorToCells(sf::Mouse::getPosition(window));
 
+		// piece selected
 		if(board.srcIsSet){
 			renderOutline(window, srcHighlight, board.src);
-			sf::Vector2i mouseCell = coorToCells(sf::Mouse::getPosition(window));
 
+			// highlight destination if move valid
 			if(board.isValidMove(mouseCell)){
-				renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
+				renderOutline(window, cursor, mouseCell);
 
+				// left mouse pressed then execute move
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
 					board.executeMove(mouseCell);
 				}
@@ -127,7 +127,7 @@ int main()
 			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-			board.setSrc(coorToCells(sf::Mouse::getPosition(window)));
+			board.setSrc(mouseCell);
 			// cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
 		}
 

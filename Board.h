@@ -10,14 +10,13 @@ class Board{
 		sf::Texture texture;
 		std::vector<std::vector<ChessPiece>> grid;
 		sf::Vector2i src;
-		sf::Vector2i dest;
+		int playerTurn;
 		bool srcIsSet;
-		bool isBlackTurn;
 		bool firstRound;
 		Board();
 		void setSrc(sf::Vector2i cell);
 		bool isValidMove(sf::Vector2i dest);
 		void executeMove(sf::Vector2i dest);
-		bool straightMovementsValid(sf::Vector2i dest);
-		bool diagonalMovementsValid(Position src, Position dest);
+		bool straightMovementsClear(sf::Vector2i dest);
+		bool diagonalMovementsClear(sf::Vector2i dest);
 };

@@ -12,8 +12,7 @@ Board::Board(){
 	this->sprite.setTexture(this->texture);
 	this->sprite.setScale(SCALE, SCALE);
 	this->src = sf::Vector2i(-1, -1);
-	this->dest = sf::Vector2i(-1, -1);
-	this->isBlackTurn = false;
+	this->playerTurn = 0;
 	this->srcIsSet = false;
 	this->firstRound = true;
 
@@ -64,27 +63,39 @@ bool Board::isValidMove(sf::Vector2i dest){
 
 	string chessPieceName = chessPiece.name.erase(0, 6);
 	if (chessPieceName == "pawn"){
-		// if first move for either player, then allow a pawn to move two squares
 		int acc = (chessPiece.player) ? 1 : -1;
-		return this->src.x == dest.x && 
-			(this->src.y + acc == dest.y || (firstRound && (this->src.y + 2*acc == dest.y)));
+		if (this->src.x == dest.x 	// same col
+				&& (this->src.y + acc == dest.y		// one step forward
+					|| (firstRound && (this->src.y + 2*acc == dest.y)))	// or two if it's the first round
+				&& (!this->grid[dest.y][dest.x].isOccupied))			// nothing in front
+		{
+			return true;
+		}
+		else if ((this->src.y + acc == dest.y)	// one step forward
+				&& (this->src.x + 1 == dest.x || this->src.x - 1 == dest.x)	// diagonal
+				&& (this->grid[dest.y][dest.x].player != playerTurn))		// contains enemy
+			return true;
+		else
+			return false;
 	}
 	else if (chessPieceName == "rook"){
-		return straightMovementsValid(dest);
+		return straightMovementsClear(dest);
 	}
 	// else if (chessPiece.name == "knight"){
 	// }
 	// else if (chessPiece.name == "bishop"){
-	//     return diagonalMovementValid(src, dest);
+	//     return diagonalMovementsClear(src, dest);
 	// }
 	// else if (chessPiece.name == "queen"){
 	//     if (src.row == dest.row || src.col == dest.col)
 	//         return straightMovementValid(src, dest);
 	//     else 
-	//         return diagonalMovementValid(src, dest);
+	//         return diagonalMovementClear(src, dest);
 	// }
-	// else if (chessPiece.name == "king"){
-	// }
+	else if (chessPiece.name == "king"){
+		// check if everything is within one block
+		return straightMovementsClear(dest) || diagonalMovementsClear(dest);
+	}
 
 	cout << "idk what is happening: " << chessPieceName << endl;
 	return true;
@@ -92,7 +103,7 @@ bool Board::isValidMove(sf::Vector2i dest){
 
 void Board::setSrc(sf::Vector2i cell)
 {
-	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == isBlackTurn){
+	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == playerTurn){
 		this->srcIsSet = true;
 		this->src = cell;
 	}
@@ -104,9 +115,11 @@ void Board::executeMove(sf::Vector2i dest)
 	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
 	this->grid[this->src.y][this->src.x] = ChessPiece();
 	this->srcIsSet = false;
+	this->firstRound = false;
+	// this->playerTurn = !this->playerTurn;
 }
 
-bool Board::straightMovementsValid(sf::Vector2i dest)
+bool Board::straightMovementsClear(sf::Vector2i dest)
 {
 	if (this->src.y != dest.y && this->src.x != dest.x)
 		return false;
@@ -117,11 +130,10 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 		int end = max(this->src.x + val, dest.x);
 		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[this->src.y][i].isOccupied)
+			if(this->grid[this->src.y][i].isOccupied && this->grid[this->src.y][i].player == playerTurn)
 				return false;
 		}
 	}
-
 	else if(this->src.x == dest.x)
 	{
 		int val = (dest.y - this->src.y) > 0 ? 1 : -1;
@@ -130,15 +142,17 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 
 		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[i][this->src.x].isOccupied)
+			if(this->grid[i][this->src.x].isOccupied && this->grid[i][this->src.x].player == playerTurn)
 				return false;
 		}
 	}
 	return true;
 }
 
-bool Board::diagonalMovementsValid(Position src, Position dest)
+bool Board::diagonalMovementsClear(sf::Vector2i dest)
 {
+	// slope of one
+	
 	return true;
 }
 
