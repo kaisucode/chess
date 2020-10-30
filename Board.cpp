@@ -64,37 +64,34 @@ bool Board::isValidMove(sf::Vector2i dest){
 	string chessPieceName = chessPiece.name.erase(0, 6);
 	if (chessPieceName == "pawn"){
 		int acc = (chessPiece.player) ? 1 : -1;
-		if (this->src.x == dest.x 	// same col
-				&& (this->src.y + acc == dest.y		// one step forward
+
+		bool canMoveForward = (this->src.x == dest.x 	// same col
+				&& (this->src.y + acc == dest.y			// one step forward
 					|| (firstRound && (this->src.y + 2*acc == dest.y)))	// or two if it's the first round
-				&& (!this->grid[dest.y][dest.x].isOccupied))			// nothing in front
-		{
-			return true;
-		}
-		else if ((this->src.y + acc == dest.y)	// one step forward
+				&& (!this->grid[dest.y][dest.x].isOccupied));			// nothing in front
+
+		bool canKillDiagonallyForward = ((this->src.y + acc == dest.y)		// one step forward
 				&& (this->src.x + 1 == dest.x || this->src.x - 1 == dest.x)	// diagonal
-				&& (this->grid[dest.y][dest.x].player != playerTurn))		// contains enemy
-			return true;
-		else
-			return false;
+				&& (this->grid[dest.y][dest.x].isOccupied)					// contains someone
+				&& (this->grid[dest.y][dest.x].player != playerTurn));		// is the enemy
+		return (canMoveForward || canKillDiagonallyForward);
 	}
 	else if (chessPieceName == "rook"){
 		return straightMovementsClear(dest);
 	}
 	// else if (chessPiece.name == "knight"){
 	// }
-	// else if (chessPiece.name == "bishop"){
-	//     return diagonalMovementsClear(src, dest);
-	// }
-	// else if (chessPiece.name == "queen"){
-	//     if (src.row == dest.row || src.col == dest.col)
-	//         return straightMovementValid(src, dest);
-	//     else 
-	//         return diagonalMovementClear(src, dest);
-	// }
+	else if (chessPiece.name == "bishop"){
+		return diagonalMovementsClear(dest);
+	}
+	else if (chessPiece.name == "queen"){
+			return (straightMovementsClear(dest) || diagonalMovementsClear(dest));
+	}
 	else if (chessPiece.name == "king"){
-		// check if everything is within one block
-		return straightMovementsClear(dest) || diagonalMovementsClear(dest);
+		int horizontalDifference = this->src.x - dest.x;
+		int verticalDifference = this->src.y - dest.y;
+		bool withinOneBlock = (abs(horizontalDifference) <= 1 && abs(verticalDifference) <= 1);
+		return (withinOneBlock && (straightMovementsClear(dest) || diagonalMovementsClear(dest)));
 	}
 
 	cout << "idk what is happening: " << chessPieceName << endl;
@@ -151,7 +148,19 @@ bool Board::straightMovementsClear(sf::Vector2i dest)
 
 bool Board::diagonalMovementsClear(sf::Vector2i dest)
 {
-	// slope of one
+	// slope of 1 or -1 check
+	double slope = (this->src.y - dest.y) / (this->src.x - dest.x);
+
+	if (slope == 1.0)
+	{
+		return true;
+	}
+	else if (slope == -1.0)
+	{
+		return true;
+	}
+	else
+		return false;
 	
 	return true;
 }

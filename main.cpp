@@ -109,8 +109,8 @@ int main()
 		renderPieces(window, board, spriteMap);
 		sf::Vector2i mouseCell = coorToCells(sf::Mouse::getPosition(window));
 
-		// piece selected
-		if(board.srcIsSet){
+		if(board.srcIsSet)	// piece selected
+		{
 			renderOutline(window, srcHighlight, board.src);
 
 			// highlight destination if move valid
@@ -123,7 +123,7 @@ int main()
 				}
 			}
 		}
-		else
+		else if (board.grid[mouseCell.y][mouseCell.x].player == board.playerTurn)	// selecte piece to control
 			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
