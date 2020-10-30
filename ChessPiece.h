@@ -1,6 +1,6 @@
 class ChessPiece{
 	public: 
-		bool is_occupied;
+		bool isOccupied;
 		int player;
 		std::string name;
 		ChessPiece();

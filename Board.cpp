@@ -17,38 +17,38 @@ Board::Board(){
 	this->srcIsSet = false;
 	this->firstRound = true;
 
-	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
+	vector<string> pieceOrder = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
 	for(int row = 0; row < 8; row++)
 	{
-		vector<ChessPiece> a_row;
+		vector<ChessPiece> aRow;
 		switch(row) 
 		{
 			case 0:
 				for(int i = 0; i < 8; i++)
-					a_row.push_back(ChessPiece(1, "black_" + piece_order[i]));
+					aRow.push_back(ChessPiece(1, "black_" + pieceOrder[i]));
 				break;
 			case 1: 
-				a_row.resize(8, ChessPiece(1, "black_pawn"));
+				aRow.resize(8, ChessPiece(1, "black_pawn"));
 				break;
 			case 6: 
-				a_row.resize(8, ChessPiece(0, "white_pawn"));
+				aRow.resize(8, ChessPiece(0, "white_pawn"));
 				break;
 			case 7: 
 				for(int i = 0; i < 8; i++)
-					a_row.push_back(ChessPiece(0, "white_" + piece_order[i]));
+					aRow.push_back(ChessPiece(0, "white_" + pieceOrder[i]));
 				break;
 			default: 
-				a_row.resize(8, ChessPiece());
+				aRow.resize(8, ChessPiece());
 				break;
 		}
-		this->grid.push_back(a_row);
+		this->grid.push_back(aRow);
 	}
 }
 
 bool Board::isValidMove(sf::Vector2i dest){
 
 	ChessPiece chessPiece = this->grid[this->src.y][this->src.x];
-	ChessPiece dest_cell = this->grid[dest.y][dest.x];
+	ChessPiece destCell = this->grid[dest.y][dest.x];
 
 	// same cell
 	if (this->src.y == dest.y && this->src.x == dest.x)
@@ -58,7 +58,7 @@ bool Board::isValidMove(sf::Vector2i dest){
 		return false;
 	}
 	// occupied by ally
-	else if (dest_cell.is_occupied && dest_cell.player == chessPiece.player){
+	else if (destCell.isOccupied && destCell.player == chessPiece.player){
 		return false;
 	}
 
@@ -92,7 +92,7 @@ bool Board::isValidMove(sf::Vector2i dest){
 
 void Board::setSrc(sf::Vector2i cell)
 {
-	if(this->grid[cell.y][cell.x].is_occupied && this->grid[cell.y][cell.x].player == isBlackTurn){
+	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == isBlackTurn){
 		this->srcIsSet = true;
 		this->src = cell;
 	}
@@ -117,7 +117,7 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 		int end = max(this->src.x + val, dest.x);
 		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[this->src.y][i].is_occupied)
+			if(this->grid[this->src.y][i].isOccupied)
 				return false;
 		}
 	}
@@ -130,7 +130,7 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 
 		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[i][this->src.x].is_occupied)
+			if(this->grid[i][this->src.x].isOccupied)
 				return false;
 		}
 	}

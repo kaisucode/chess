@@ -7,68 +7,66 @@
 #include "ResourceHolder.h"
 using namespace std;
 
-vector<string> generate_chess_piece_names(string color)
+vector<string> generateChessPieceNames(string color)
 {
 	vector<string> chessPieceNames = {"king", "queen", "bishop", "knight", "rook", "pawn"};
 	vector<string> newVector;
-	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++){
-		string newName = color + chessPieceNames[i];
-		newVector.push_back(newName);
-	}
+	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++)
+		newVector.push_back(color + chessPieceNames[i]);
 	return newVector;
 }
 
-map<string, sf::Sprite> generate_sprite_map(ResourceHolder<sf::Texture, string> &textures, vector<string> white_pieces, vector<string> black_pieces){
-	std::map<string, sf::Sprite> sprite_map;
+map<string, sf::Sprite> generateSpriteMap(ResourceHolder<sf::Texture, string> &textures, vector<string> whitePieces, vector<string> blackPieces){
+	std::map<string, sf::Sprite> spriteMap;
 	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++)
 	{
-		textures.load(white_pieces[i], "assets/" + white_pieces[i] + ".png");
-		textures.load(black_pieces[i], "assets/" + black_pieces[i] + ".png");
-		sprite_map.insert(pair<string, sf::Sprite>(white_pieces[i], textures.get(white_pieces[i])));
-		sprite_map.insert(pair<string, sf::Sprite>(black_pieces[i], textures.get(black_pieces[i])));
-		sprite_map[white_pieces[i]].setScale(SCALE, SCALE);
-		sprite_map[black_pieces[i]].setScale(SCALE, SCALE);
+		textures.load(whitePieces[i], "assets/" + whitePieces[i] + ".png");
+		textures.load(blackPieces[i], "assets/" + blackPieces[i] + ".png");
+		spriteMap.insert(pair<string, sf::Sprite>(whitePieces[i], textures.get(whitePieces[i])));
+		spriteMap.insert(pair<string, sf::Sprite>(blackPieces[i], textures.get(blackPieces[i])));
+		spriteMap[whitePieces[i]].setScale(SCALE, SCALE);
+		spriteMap[blackPieces[i]].setScale(SCALE, SCALE);
 	}
-	return sprite_map;
+	return spriteMap;
 }
 
-void renderPieces(sf::RenderWindow &window, Board &board, map<string, sf::Sprite> &sprite_map){
+void renderPieces(sf::RenderWindow &window, Board &board, map<string, sf::Sprite> &spriteMap){
 	for(int row = 0; row < 8; row++){
 		for(int col = 0; col < 8; col++){
-			if(board.grid[row][col].is_occupied)
+			if(board.grid[row][col].isOccupied)
 			{
 				string name = board.grid[row][col].name;
 
-				int col_spacing = SCALE * (col * CELL_SIZE + MARGINS + 3);
-				int row_spacing = SCALE * (row * CELL_SIZE + MARGINS + 3);
+				int colSpacing = SCALE * (col * CELL_SIZE + MARGINS + 3);
+				int rowSpacing = SCALE * (row * CELL_SIZE + MARGINS + 3);
 
-				sprite_map[name].setPosition(col_spacing, row_spacing);
-				window.draw(sprite_map[name]);
+				spriteMap[name].setPosition(colSpacing, rowSpacing);
+				window.draw(spriteMap[name]);
 			}
 		}
 	}
 }
 
-sf::Vector2i coor_to_cells(sf::Vector2i mousePos){
+sf::Vector2i coorToCells(sf::Vector2i mousePos){
 	int row = ((mousePos.y / SCALE) - MARGINS) / CELL_SIZE;
 	int col = ((mousePos.x / SCALE) - MARGINS) / CELL_SIZE;
 	return sf::Vector2i(col, row);
 }
 
-sf::Vector2f cell_to_coor(sf::Vector2i cell){
-	float row_cell = SCALE * (cell.y * CELL_SIZE + MARGINS);
-	float col_cell = SCALE * (cell.x * CELL_SIZE + MARGINS);
-	return sf::Vector2f(col_cell, row_cell);
+sf::Vector2f cellToCoor(sf::Vector2i cell){
+	float row = SCALE * (cell.y * CELL_SIZE + MARGINS);
+	float col = SCALE * (cell.x * CELL_SIZE + MARGINS);
+	return sf::Vector2f(col, row);
 }
 
 void renderOutline(sf::RenderWindow &window, sf::RectangleShape rect, sf::Vector2i cell)
 {
-	sf::Vector2f coordinates = cell_to_coor(cell);
+	sf::Vector2f coordinates = cellToCoor(cell);
 	rect.setPosition(coordinates);
 	window.draw(rect);
 }
 
-sf::RectangleShape generate_outline(sf::Color color)
+sf::RectangleShape generateOutline(sf::Color color)
 {
 	sf::RectangleShape rect(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
 	rect.setFillColor(sf::Color::Transparent);
@@ -79,21 +77,21 @@ sf::RectangleShape generate_outline(sf::Color color)
 
 int main()
 {
-	vector<string> white_pieces = generate_chess_piece_names("white_");
-	vector<string> black_pieces = generate_chess_piece_names("black_");
+	vector<string> whitePieces = generateChessPieceNames("white_");
+	vector<string> blackPieces = generateChessPieceNames("black_");
 
     // create the window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
 	// create a central resource manager
 	ResourceHolder<sf::Texture, string> textures;
-	std::map<string, sf::Sprite> sprite_map = generate_sprite_map(textures, white_pieces, black_pieces);
+	std::map<string, sf::Sprite> spriteMap = generateSpriteMap(textures, whitePieces, blackPieces);
 
 	// create board
 	Board board = Board();
 
-	sf::RectangleShape cursor = generate_outline(sf::Color(100, 250, 50));
-	sf::RectangleShape src_highlight = generate_outline(sf::Color(255, 0, 0));
+	sf::RectangleShape cursor = generateOutline(sf::Color(100, 250, 50));
+	sf::RectangleShape srcHighlight = generateOutline(sf::Color(255, 0, 0));
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -111,14 +109,14 @@ int main()
 
         // draw everything here...
 		window.draw(board.sprite);
-		renderPieces(window, board, sprite_map);
+		renderPieces(window, board, spriteMap);
 
 		if(board.srcIsSet){
-			renderOutline(window, src_highlight, board.src);
-			sf::Vector2i mouseCell = coor_to_cells(sf::Mouse::getPosition(window));
+			renderOutline(window, srcHighlight, board.src);
+			sf::Vector2i mouseCell = coorToCells(sf::Mouse::getPosition(window));
 
 			if(board.isValidMove(mouseCell)){
-				renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+				renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
 					board.executeMove(mouseCell);
@@ -126,10 +124,10 @@ int main()
 			}
 		}
 		else
-			renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-			board.setSrc(coor_to_cells(sf::Mouse::getPosition(window)));
+			board.setSrc(coorToCells(sf::Mouse::getPosition(window)));
 			// cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
 		}
 
