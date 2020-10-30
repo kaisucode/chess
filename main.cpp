@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-#include "GlobalVars.h"
+#include "constants.h"
 #include "Board.h"
 #include "ResourceHolder.h"
 using namespace std;

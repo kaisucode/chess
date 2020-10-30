@@ -3,13 +3,14 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "constants.h"
 #include "Board.h"
 using namespace std;
 
 Board::Board(){
 	this->texture.loadFromFile("assets/board.png");
 	this->sprite.setTexture(this->texture);
-	this->sprite.setScale(3, 3);
+	this->sprite.setScale(SCALE, SCALE);
 
 	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
 	for(int row = 0; row < 8; row++)
