@@ -13,6 +13,7 @@ Board::Board(){
 	this->sprite.setScale(SCALE, SCALE);
 	this->src = sf::Vector2i(-1, -1);
 	this->dest = sf::Vector2i(-1, -1);
+	this->isBlackTurn = false;
 	this->srcIsSet = false;
 
 	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
@@ -33,7 +34,7 @@ Board::Board(){
 				break;
 			case 7: 
 				for(int i = 0; i < 8; i++)
-					a_row.push_back(ChessPiece(1, "white_" + piece_order[i]));
+					a_row.push_back(ChessPiece(0, "white_" + piece_order[i]));
 				break;
 			default: 
 				a_row.resize(8, ChessPiece());
@@ -92,8 +93,10 @@ bool Board::isValidMove(Position src, Position dest){
 
 void Board::setSrc(sf::Vector2i cell)
 {
-	this->srcIsSet = true;
-	this->src = cell;
+	if(this->grid[cell.y][cell.x].is_occupied && this->grid[cell.y][cell.x].player == isBlackTurn){
+		this->srcIsSet = true;
+		this->src = cell;
+	}
 }
 
 bool Board::straightMovementValid(Position src, Position dest)

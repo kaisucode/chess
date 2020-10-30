@@ -61,18 +61,11 @@ sf::Vector2f cell_to_coor(sf::Vector2i cell){
 	return sf::Vector2f(col_cell, row_cell);
 }
 
-sf::Vector2f getCursorCoordinates(sf::RenderWindow &window)
+void renderOutline(sf::RenderWindow &window, sf::RectangleShape rect, sf::Vector2i cell)
 {
-	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-	sf::Vector2i cell = coor_to_cells(mousePos);
-	return cell_to_coor(cell);
-}
-
-void renderCursor(sf::RenderWindow &window, sf::RectangleShape cursor)
-{
-	sf::Vector2f mouseCells = getCursorCoordinates(window);
-	cursor.setPosition(mouseCells.x, mouseCells.y);
-	window.draw(cursor);
+	sf::Vector2f coordinates = cell_to_coor(cell);
+	rect.setPosition(coordinates);
+	window.draw(rect);
 }
 
 sf::RectangleShape generate_outline(sf::Color color)
@@ -102,14 +95,6 @@ int main()
 	sf::RectangleShape cursor = generate_outline(sf::Color(100, 250, 50));
 	sf::RectangleShape src_highlight = generate_outline(sf::Color(250, 0, 0));
 
-	// sf::RectangleShape cursor(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
-	// cursor.setFillColor(sf::Color::Transparent);
-	// cursor.setOutlineThickness(4);
-	// cursor.setOutlineColor(sf::Color(100, 250, 50));
-
-	// rectangle.setOutlineThickness(0);
-	// rectangle.setFillColor(sf::Color(100, 250, 50));
-
     // run the program as long as the window is open
     while (window.isOpen())
     {
@@ -127,20 +112,17 @@ int main()
         // draw everything here...
 		window.draw(board.sprite);
 		renderPieces(window, board, sprite_map);
-		renderCursor(window, cursor);
 
-		// render src
+
+		renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+
 		if(board.srcIsSet){
-			sf::Vector2f coor = cell_to_coor(board.src);
-			src_highlight.setPosition(coor);
-			window.draw(src_highlight);
+			renderOutline(window, src_highlight, board.src);
 		}
-
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			sf::Vector2i mouseCells = coor_to_cells(mousePos);
-			cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
+			sf::Vector2i mouseCells = coor_to_cells(sf::Mouse::getPosition(window));
 			board.setSrc(mouseCells);
+			cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
 		}
 
         // end the current frame
