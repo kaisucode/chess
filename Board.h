@@ -1,5 +1,3 @@
-#ifndef BOARD_H
-#define BOARD_H
 #include "ChessPiece.h"
 struct Position{
 	int row;
@@ -16,4 +14,3 @@ class Board{
 		bool straightMovementValid(Position src, Position dest);
 		bool diagonalMovementValid(Position src, Position dest);
 };
-#endif
