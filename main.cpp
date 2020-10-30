@@ -93,7 +93,7 @@ int main()
 	Board board = Board();
 
 	sf::RectangleShape cursor = generate_outline(sf::Color(100, 250, 50));
-	sf::RectangleShape src_highlight = generate_outline(sf::Color(250, 0, 0));
+	sf::RectangleShape src_highlight = generate_outline(sf::Color(255, 0, 0));
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -114,11 +114,16 @@ int main()
 		renderPieces(window, board, sprite_map);
 
 
-		renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
-
 		if(board.srcIsSet){
 			renderOutline(window, src_highlight, board.src);
+			if(board.isValidMove(coor_to_cells(sf::Mouse::getPosition(window)))){
+				// cursor.setOutlineColor(sf::Color(255, 0, 0));
+				renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+			}
 		}
+		else
+			renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
 			sf::Vector2i mouseCells = coor_to_cells(sf::Mouse::getPosition(window));
 			board.setSrc(mouseCells);

@@ -44,51 +44,50 @@ Board::Board(){
 	}
 }
 
-bool Board::isValidMove(Position src, Position dest){
+bool Board::isValidMove(sf::Vector2i dest){
 
-	ChessPiece cur_cell = this->grid[src.row][src.col];
-	ChessPiece dest_cell = this->grid[dest.row][dest.col];
+	ChessPiece chessPiece = this->grid[this->src.y][this->src.x];
+	ChessPiece dest_cell = this->grid[dest.y][dest.x];
 
 	// same cell
-	if (src.row == dest.row && src.col == dest.col)
+	if (this->src.y == dest.y && this->src.x == dest.x)
 		return false;
 	// out of bounds
-	else if (dest.row > 7 || dest.row < 0 || dest.col > 7 || dest.row < 0){
+	else if (dest.y > 7 || dest.y < 0 || dest.x > 7 || dest.x < 0){
 		return false;
 	}
 	// occupied by ally
-	else if (dest_cell.is_occupied && dest_cell.player == cur_cell.player){
+	else if (dest_cell.is_occupied && dest_cell.player == chessPiece.player){
 		return false;
 	}
-
-	ChessPiece chessPiece = this->grid[src.row][src.col];
-
 	// empty cell
-	if (!chessPiece.is_occupied){
+	else if (!chessPiece.is_occupied){
 		return false;
 	}
-	else if (chessPiece.name == "pawn"){
+
+
+	if (chessPiece.name == "pawn"){
 		// if first move for either player, then allow a pawn to move two squares
 	}
 	else if (chessPiece.name == "rook"){
 		return straightMovementValid(src, dest);
 	}
-	else if (chessPiece.name == "knight"){
-	}
-	else if (chessPiece.name == "bishop"){
-		return diagonalMovementValid(src, dest);
-	}
-	else if (chessPiece.name == "queen"){
-		if (src.row == dest.row || src.col == dest.col)
-			return straightMovementValid(src, dest);
-		else 
-			return diagonalMovementValid(src, dest);
-	}
-	else if (chessPiece.name == "king"){
-	}
+	// else if (chessPiece.name == "knight"){
+	// }
+	// else if (chessPiece.name == "bishop"){
+	//     return diagonalMovementValid(src, dest);
+	// }
+	// else if (chessPiece.name == "queen"){
+	//     if (src.row == dest.row || src.col == dest.col)
+	//         return straightMovementValid(src, dest);
+	//     else 
+	//         return diagonalMovementValid(src, dest);
+	// }
+	// else if (chessPiece.name == "king"){
+	// }
 
 	cout << "idk what is happening" << endl;
-	return false;
+	return true;
 }
 
 void Board::setSrc(sf::Vector2i cell)
@@ -99,7 +98,7 @@ void Board::setSrc(sf::Vector2i cell)
 	}
 }
 
-bool Board::straightMovementValid(Position src, Position dest)
+bool Board::straightMovementsValid(Position src, Position dest)
 {
 	if(src.row == dest.row)
 	{
@@ -122,7 +121,7 @@ bool Board::straightMovementValid(Position src, Position dest)
 	return true;
 }
 
-bool Board::diagonalMovementValid(Position src, Position dest)
+bool Board::diagonalMovementsValid(Position src, Position dest)
 {
 	return true;
 }
