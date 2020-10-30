@@ -53,7 +53,6 @@ int main()
 
         // draw everything here...
 		window.draw(board.sprite);
-
 		for(int row = 0; row < 8; row++){
 			for(int col = 0; col < 8; col++){
 				if(board.grid[row][col].is_occupied)
@@ -64,41 +63,6 @@ int main()
 				}
 			}
 		}
-
-		// sprite_map["white_pawn"].setPosition(200, 200);
-		// window.draw(sprite_map["white_pawn"]);
-
-		// sprite_map["white_pawn"].setPosition(500, 200);
-		// window.draw(sprite_map["white_pawn"]);
-
-		// window.draw(sprite_map["white_queen"]);
-
-		// std::map<string, ChessPiece>::iterator it;
-		// for(it = board.black_pieces.begin(); it != board.black_pieces.end(); it++)
-		// {
-			
-		//     window.draw()
-		// }
-
-		// if(it != board.black_pieces.end()){
-			// cout << it.pos.x << " " << it.pos.y << endl;
-			// (*it)
-			// window.draw(board.black_pieces.find("black_knight")->second.sprite);
-		// }
-		// else{
-		//     cout << "oops" << endl;
-		// }
-		// window.draw(board.black_pieces[0].sprite);
-	// this->black_pieces.insert(pair<string, ChessPiece>("black_knight", black_knight));
-
-		// for(int i = 0; i< board.black_pieces.size(); i++){
-		//     sf::Sprite temp = board.black_pieces[0].sprite;
-		//     window.draw(temp);
-			// window.draw(board.black_pieces[0].sprite);
-		// }
-		// ChessPiece black_knight = ChessPiece("assets/black_knight.png", 0, 3, 4);
-		// window.draw(black_knight.sprite);
-
 
         // end the current frame
         window.display();

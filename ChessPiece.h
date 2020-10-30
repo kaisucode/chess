@@ -1,13 +1,8 @@
-struct Position{
-	int x;
-	int y;
-};
-
 class ChessPiece{
 	public: 
 		bool is_occupied;
 		int player;
-		std::string piece;
+		std::string name;
 		ChessPiece();
-		ChessPiece(int player, std::string piece);
+		ChessPiece(int player, std::string name);
 };

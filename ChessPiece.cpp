@@ -9,9 +9,9 @@ ChessPiece::ChessPiece(){
 
 // 0 is white
 // 1 is black
-ChessPiece::ChessPiece(int player, std::string piece){
+ChessPiece::ChessPiece(int player, std::string name){
 	this->is_occupied = true;
 	this->player = player;
-	this->piece = piece;
+	this->name = name;
 }
 
