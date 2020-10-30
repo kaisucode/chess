@@ -15,6 +15,7 @@ Board::Board(){
 	this->dest = sf::Vector2i(-1, -1);
 	this->isBlackTurn = false;
 	this->srcIsSet = false;
+	this->firstRound = true;
 
 	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
 	for(int row = 0; row < 8; row++)
@@ -60,17 +61,16 @@ bool Board::isValidMove(sf::Vector2i dest){
 	else if (dest_cell.is_occupied && dest_cell.player == chessPiece.player){
 		return false;
 	}
-	// empty cell
-	else if (!chessPiece.is_occupied){
-		return false;
-	}
 
-
-	if (chessPiece.name == "pawn"){
+	string chessPieceName = chessPiece.name.erase(0, 6);
+	if (chessPieceName == "pawn"){
 		// if first move for either player, then allow a pawn to move two squares
+		int acc = (chessPiece.player) ? 1 : -1;
+		return this->src.x == dest.x && 
+			(this->src.y + acc == dest.y || (firstRound && (this->src.y + 2*acc == dest.y)));
 	}
-	else if (chessPiece.name == "rook"){
-		return straightMovementValid(src, dest);
+	else if (chessPieceName == "rook"){
+		return straightMovementsValid(dest);
 	}
 	// else if (chessPiece.name == "knight"){
 	// }
@@ -86,7 +86,7 @@ bool Board::isValidMove(sf::Vector2i dest){
 	// else if (chessPiece.name == "king"){
 	// }
 
-	cout << "idk what is happening" << endl;
+	cout << "idk what is happening: " << chessPieceName << endl;
 	return true;
 }
 
@@ -98,25 +98,41 @@ void Board::setSrc(sf::Vector2i cell)
 	}
 }
 
-bool Board::straightMovementsValid(Position src, Position dest)
+bool Board::straightMovementsValid(sf::Vector2i dest)
 {
-	if(src.row == dest.row)
+	if (this->src.y != dest.y && this->src.x != dest.x)
+		return false;
+	else if(this->src.y == dest.y)
 	{
-		int val = (dest.col-src.col) > 0 ? 1 : -1;
-		for(int i = src.col; i <= dest.col; i+=val)
+		int val = (dest.x - this->src.x) > 0 ? 1 : -1;
+		int start = min(this->src.y + val, dest.y);
+		int end = max(this->src.y + val, dest.y);
+		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[src.row][i].is_occupied)
+			if(this->grid[this->src.y][i].is_occupied)
 				return false;
 		}
+		cout << "same y/row valid" << endl;
 	}
-	else if (src.col == dest.col)
+
+	else if(this->src.x == dest.x)
 	{
-		int val = (dest.row-src.row) > 0 ? 1 : -1;
-		for(int i = src.row; i <= dest.row; i+=val)
+		int val = (dest.y - this->src.y) > 0 ? 1 : -1;
+		int start = min(this->src.y + val, dest.y);
+		int end = max(this->src.y + val, dest.y);
+
+		for(int i = start; i <= end; i++)
 		{
-			if(this->grid[i][src.col].is_occupied)
+			cout << "grid[" << i << "][" << this->src.x << "].is_occupied is " << this->grid[i][this->src.x].is_occupied << endl;
+			cout << "grid[" << i << "][" << this->src.x << "].name is " << this->grid[i][this->src.x].name << endl;
+			if(this->grid[i][this->src.x].is_occupied)
 				return false;
+			else
+				cout << grid[i][this->src.x].name << endl;
 		}
+		cout << "dest.y: " << dest.y << "\ndest.x: " << dest.x << endl;
+		cout << "src.y: " << this->src.y << "\nsrc.x: " << this->src.x << endl;
+		cout << "same x/col valid" << endl;
 	}
 	return true;
 }

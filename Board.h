@@ -13,9 +13,10 @@ class Board{
 		sf::Vector2i dest;
 		bool srcIsSet;
 		bool isBlackTurn;
+		bool firstRound;
 		Board();
 		void setSrc(sf::Vector2i cell);
 		bool isValidMove(sf::Vector2i dest);
-		bool straightMovementsValid(Position src, Position dest);
+		bool straightMovementsValid(sf::Vector2i dest);
 		bool diagonalMovementsValid(Position src, Position dest);
 };
