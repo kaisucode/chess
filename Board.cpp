@@ -11,6 +11,9 @@ Board::Board(){
 	this->texture.loadFromFile("assets/board.png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setScale(SCALE, SCALE);
+	this->src = sf::Vector2i(-1, -1);
+	this->dest = sf::Vector2i(-1, -1);
+	this->srcIsSet = false;
 
 	vector<string> piece_order = {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"};
 	for(int row = 0; row < 8; row++)
@@ -87,24 +90,37 @@ bool Board::isValidMove(Position src, Position dest){
 	return false;
 }
 
-bool Board::straightMovementValid(Position src, Position dest){
-	if(src.row == dest.row){
+void Board::setSrc(sf::Vector2i cell)
+{
+	this->srcIsSet = true;
+	this->src = cell;
+}
+
+bool Board::straightMovementValid(Position src, Position dest)
+{
+	if(src.row == dest.row)
+	{
 		int val = (dest.col-src.col) > 0 ? 1 : -1;
-		for(int i = src.col; i <= dest.col; i+=val){
+		for(int i = src.col; i <= dest.col; i+=val)
+		{
 			if(this->grid[src.row][i].is_occupied)
 				return false;
 		}
 	}
-	else if (src.col == dest.col){
+	else if (src.col == dest.col)
+	{
 		int val = (dest.row-src.row) > 0 ? 1 : -1;
-		for(int i = src.row; i <= dest.row; i+=val){
+		for(int i = src.row; i <= dest.row; i+=val)
+		{
 			if(this->grid[i][src.col].is_occupied)
 				return false;
 		}
 	}
 	return true;
 }
-bool Board::diagonalMovementValid(Position src, Position dest){
+
+bool Board::diagonalMovementValid(Position src, Position dest)
+{
 	return true;
 }
 

@@ -18,9 +18,71 @@ vector<string> generate_chess_piece_names(string color)
 	return new_vector;
 }
 
-// void load_chess_pieces(ResourceHolder<sf::Texture, string> textures, vector<string> white_pieces, vector<string> black_pieces){
-//     return;
-// }
+map<string, sf::Sprite> generate_sprite_map(ResourceHolder<sf::Texture, string> &textures, vector<string> white_pieces, vector<string> black_pieces){
+	std::map<string, sf::Sprite> sprite_map;
+	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++)
+	{
+		textures.load(white_pieces[i], "assets/" + white_pieces[i] + ".png");
+		textures.load(black_pieces[i], "assets/" + black_pieces[i] + ".png");
+		sprite_map.insert(pair<string, sf::Sprite>(white_pieces[i], textures.get(white_pieces[i])));
+		sprite_map.insert(pair<string, sf::Sprite>(black_pieces[i], textures.get(black_pieces[i])));
+		sprite_map[white_pieces[i]].setScale(SCALE, SCALE);
+		sprite_map[black_pieces[i]].setScale(SCALE, SCALE);
+	}
+	return sprite_map;
+}
+
+void renderPieces(sf::RenderWindow &window, Board &board, map<string, sf::Sprite> &sprite_map){
+	for(int row = 0; row < 8; row++){
+		for(int col = 0; col < 8; col++){
+			if(board.grid[row][col].is_occupied)
+			{
+				string name = board.grid[row][col].name;
+
+				int col_spacing = SCALE * (col * CELL_SIZE + MARGINS + 3);
+				int row_spacing = SCALE * (row * CELL_SIZE + MARGINS + 3);
+
+				sprite_map[name].setPosition(col_spacing, row_spacing);
+				window.draw(sprite_map[name]);
+			}
+		}
+	}
+}
+
+sf::Vector2i coor_to_cells(sf::Vector2i mousePos){
+	int row = ((mousePos.y / SCALE) - MARGINS) / CELL_SIZE;
+	int col = ((mousePos.x / SCALE) - MARGINS) / CELL_SIZE;
+	return sf::Vector2i(col, row);
+}
+
+sf::Vector2f cell_to_coor(sf::Vector2i cell){
+	float row_cell = SCALE * (cell.y * CELL_SIZE + MARGINS);
+	float col_cell = SCALE * (cell.x * CELL_SIZE + MARGINS);
+	return sf::Vector2f(col_cell, row_cell);
+}
+
+sf::Vector2f getCursorCoordinates(sf::RenderWindow &window)
+{
+	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+	sf::Vector2i cell = coor_to_cells(mousePos);
+	return cell_to_coor(cell);
+}
+
+void renderCursor(sf::RenderWindow &window, sf::RectangleShape cursor)
+{
+	sf::Vector2f mouseCells = getCursorCoordinates(window);
+	cursor.setPosition(mouseCells.x, mouseCells.y);
+	window.draw(cursor);
+}
+
+sf::RectangleShape generate_outline(sf::Color color)
+{
+	sf::RectangleShape rect(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
+	rect.setFillColor(sf::Color::Transparent);
+	rect.setOutlineThickness(4);
+	rect.setOutlineColor(color);
+	return rect;
+}
 
 int main()
 {
@@ -32,34 +94,21 @@ int main()
 
 	// create a central resource manager
 	ResourceHolder<sf::Texture, string> textures;
-	std::map<string, sf::Sprite> sprite_map;
+	std::map<string, sf::Sprite> sprite_map = generate_sprite_map(textures, white_pieces, black_pieces);
 
-	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++)
-	{
-		textures.load(white_pieces[i], "assets/" + white_pieces[i] + ".png");
-		textures.load(black_pieces[i], "assets/" + black_pieces[i] + ".png");
-
-		sprite_map.insert(pair<string, sf::Sprite>(white_pieces[i], textures.get(white_pieces[i])));
-		sprite_map.insert(pair<string, sf::Sprite>(black_pieces[i], textures.get(black_pieces[i])));
-
-		sprite_map[white_pieces[i]].setScale(SCALE, SCALE);
-		sprite_map[black_pieces[i]].setScale(SCALE, SCALE);
-	}
-
-	// load board
+	// create board
 	Board board = Board();
 
+	sf::RectangleShape cursor = generate_outline(sf::Color(100, 250, 50));
+	sf::RectangleShape src_highlight = generate_outline(sf::Color(250, 0, 0));
 
-	sf::RectangleShape rectangle(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
-	rectangle.setFillColor(sf::Color::Transparent);
-	rectangle.setOutlineThickness(4);
-	rectangle.setOutlineColor(sf::Color(100, 250, 50));
+	// sf::RectangleShape cursor(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
+	// cursor.setFillColor(sf::Color::Transparent);
+	// cursor.setOutlineThickness(4);
+	// cursor.setOutlineColor(sf::Color(100, 250, 50));
 
 	// rectangle.setOutlineThickness(0);
 	// rectangle.setFillColor(sf::Color(100, 250, 50));
-
-	int foo = SCALE * (3 * CELL_SIZE + MARGINS);
-	rectangle.setPosition(foo, foo);
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -77,35 +126,22 @@ int main()
 
         // draw everything here...
 		window.draw(board.sprite);
-		for(int row = 0; row < 8; row++){
-			for(int col = 0; col < 8; col++){
-				if(board.grid[row][col].is_occupied)
-				{
-					string name = board.grid[row][col].name;
+		renderPieces(window, board, sprite_map);
+		renderCursor(window, cursor);
 
-					int col_spacing = SCALE * (col * CELL_SIZE + MARGINS + 3);
-					int row_spacing = SCALE * (row * CELL_SIZE + MARGINS + 3);
-
-					sprite_map[name].setPosition(col_spacing, row_spacing);
-					window.draw(sprite_map[name]);
-				}
-			}
+		// render src
+		if(board.srcIsSet){
+			sf::Vector2f coor = cell_to_coor(board.src);
+			src_highlight.setPosition(coor);
+			window.draw(src_highlight);
 		}
-
-		window.draw(rectangle);
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			cout << "x: " << mousePos.x << "\ny: " << mousePos.y << endl;
-
-			int x_coor = (mousePos.x - MARGINS) / (SCALE * CELL_SIZE);
-			int y_coor = (mousePos.y - MARGINS) / (SCALE * CELL_SIZE);
-			cout << "x_coor: " << x_coor << "\ny_coor: " << y_coor << endl;
+			sf::Vector2i mouseCells = coor_to_cells(mousePos);
+			cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
+			board.setSrc(mouseCells);
 		}
-
-		// if (sprite.getPosition().x <= Mouse::getPosition().x + 100 && sprite.getPosition().x >= Mouse::getPosition().x - 100 && sprite.getPosition().y <= Mouse::getPosition().y +100 && sprite.getPosition().y >= Mouse::getPosition -100)
-
-
 
         // end the current frame
         window.display();
