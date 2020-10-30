@@ -9,13 +9,13 @@ using namespace std;
 
 vector<string> generate_chess_piece_names(string color)
 {
-	vector<string> chess_piece_names = {"king", "queen", "bishop", "knight", "rook", "pawn"};
-	vector<string> new_vector;
+	vector<string> chessPieceNames = {"king", "queen", "bishop", "knight", "rook", "pawn"};
+	vector<string> newVector;
 	for(int i = 0; i < NUM_OF_PIECE_TYPES; i++){
-		string new_name = color + chess_piece_names[i];
-		new_vector.push_back(new_name);
+		string newName = color + chessPieceNames[i];
+		newVector.push_back(newName);
 	}
-	return new_vector;
+	return newVector;
 }
 
 map<string, sf::Sprite> generate_sprite_map(ResourceHolder<sf::Texture, string> &textures, vector<string> white_pieces, vector<string> black_pieces){
@@ -113,21 +113,24 @@ int main()
 		window.draw(board.sprite);
 		renderPieces(window, board, sprite_map);
 
-
 		if(board.srcIsSet){
 			renderOutline(window, src_highlight, board.src);
-			if(board.isValidMove(coor_to_cells(sf::Mouse::getPosition(window)))){
-				// cursor.setOutlineColor(sf::Color(255, 0, 0));
+			sf::Vector2i mouseCell = coor_to_cells(sf::Mouse::getPosition(window));
+
+			if(board.isValidMove(mouseCell)){
 				renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+					board.executeMove(mouseCell);
+				}
 			}
 		}
 		else
 			renderOutline(window, cursor, coor_to_cells(sf::Mouse::getPosition(window)));
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-			sf::Vector2i mouseCells = coor_to_cells(sf::Mouse::getPosition(window));
-			board.setSrc(mouseCells);
-			cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
+			board.setSrc(coor_to_cells(sf::Mouse::getPosition(window)));
+			// cout << "row: " << mouseCells.y << "\ncol: " << mouseCells.x << endl;
 		}
 
         // end the current frame

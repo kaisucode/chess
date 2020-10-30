@@ -98,6 +98,14 @@ void Board::setSrc(sf::Vector2i cell)
 	}
 }
 
+void Board::executeMove(sf::Vector2i dest)
+{
+	cout << "move executing" << endl;
+	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
+	this->grid[this->src.y][this->src.x] = ChessPiece();
+	this->srcIsSet = false;
+}
+
 bool Board::straightMovementsValid(sf::Vector2i dest)
 {
 	if (this->src.y != dest.y && this->src.x != dest.x)
@@ -105,14 +113,13 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 	else if(this->src.y == dest.y)
 	{
 		int val = (dest.x - this->src.x) > 0 ? 1 : -1;
-		int start = min(this->src.y + val, dest.y);
-		int end = max(this->src.y + val, dest.y);
+		int start = min(this->src.x + val, dest.x);
+		int end = max(this->src.x + val, dest.x);
 		for(int i = start; i <= end; i++)
 		{
 			if(this->grid[this->src.y][i].is_occupied)
 				return false;
 		}
-		cout << "same y/row valid" << endl;
 	}
 
 	else if(this->src.x == dest.x)
@@ -123,16 +130,9 @@ bool Board::straightMovementsValid(sf::Vector2i dest)
 
 		for(int i = start; i <= end; i++)
 		{
-			cout << "grid[" << i << "][" << this->src.x << "].is_occupied is " << this->grid[i][this->src.x].is_occupied << endl;
-			cout << "grid[" << i << "][" << this->src.x << "].name is " << this->grid[i][this->src.x].name << endl;
 			if(this->grid[i][this->src.x].is_occupied)
 				return false;
-			else
-				cout << grid[i][this->src.x].name << endl;
 		}
-		cout << "dest.y: " << dest.y << "\ndest.x: " << dest.x << endl;
-		cout << "src.y: " << this->src.y << "\nsrc.x: " << this->src.x << endl;
-		cout << "same x/col valid" << endl;
 	}
 	return true;
 }

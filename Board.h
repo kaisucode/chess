@@ -17,6 +17,7 @@ class Board{
 		Board();
 		void setSrc(sf::Vector2i cell);
 		bool isValidMove(sf::Vector2i dest);
+		void executeMove(sf::Vector2i dest);
 		bool straightMovementsValid(sf::Vector2i dest);
 		bool diagonalMovementsValid(Position src, Position dest);
 };
