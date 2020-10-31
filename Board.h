@@ -16,9 +16,12 @@ class Board{
 		bool firstRound;
 		Board();
 		void setSrc(sf::Vector2i cell);
-		bool isValidMove(sf::Vector2i dest);
+		// bool isValidMove(sf::Vector2i dest);
 		void executeMove(sf::Vector2i dest);
-		bool straightMovementsClear();
-		bool diagonalMovementsClear(sf::Vector2i dest);
+		void straightMovementsClear();
+		void diagonalMovementsClear();
+		bool withinBoard(sf::Vector2i cell);
 		void mapValidMoves();
+		void pawnMovements();
+		ChessPiece getGridPiece(sf::Vector2i cell);
 };

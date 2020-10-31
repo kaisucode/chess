@@ -126,9 +126,10 @@ int main()
 			// if(board.isValidMove(mouseCell)){
 			//     renderOutline(window, cursor, mouseCell);
 
-				// left mouse pressed then execute move
+				// right mouse pressed then execute move
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-					board.executeMove(mouseCell);
+					if (find(board.validMoves.begin(), board.validMoves.end(), mouseCell) != board.validMoves.end())
+						board.executeMove(mouseCell);
 				}
 			// }
 		}
