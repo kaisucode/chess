@@ -64,19 +64,23 @@ void Board::mapValidMoves(){
 	}
 	// else if (chessPiece.name == "knight"){
 	// }
-	// else if (chessPiece.name == "bishop"){
-	//     return diagonalMovementsClear();
-	// }
-	// else if (chessPiece.name == "queen"){
-	//     return (straightMovementsClear() || diagonalMovementsClear());
-	// }
-	// else if (chessPiece.name == "king"){
-	//     int horizontalDifference = this->src.x - dest.x;
-	//     int verticalDifference = this->src.y - dest.y;
-	//     bool withinOneBlock = (abs(horizontalDifference) <= 1 && abs(verticalDifference) <= 1);
-	//     return (withinOneBlock && (straightMovementsClear() || diagonalMovementsClear(dest)));
-	// }
+	else if (chessPiece.name == "bishop"){
+		diagonalMovementsClear();
+	}
+	else if (chessPiece.name == "queen"){
+		straightMovementsClear();
+		diagonalMovementsClear();
+	}
+	else if (chessPiece.name == "king"){
+		for(int i = -1; i <= 1; i++){
+			for(int j = -1; j <= 1; j++){
+				if(i + j == 0)
+					continue;
 
+				// cell is valid
+			}
+		}
+	}
 }
 
 // bool Board::isValidMove(sf::Vector2i dest){
@@ -153,60 +157,61 @@ void Board::executeMove(sf::Vector2i dest)
 	// this->playerTurn = !this->playerTurn;
 }
 
+bool Board::determineCellAndShouldContinue(sf::Vector2i cell){
+	if(!getGridPiece(cell).isOccupied){						// empty
+		this->validMoves.push_back(cell);
+		return true;
+	}
+	else if (!(getGridPiece(cell).player == playerTurn))	// enemy
+		this->validMoves.push_back(cell);
+	return false;											// ally
+}
+
 void Board::straightMovementsClear()
 {
 	// vertical movement
 	int num = this->src.y;
 	for(int i = num - 1; i >= 0; i--){
 		sf::Vector2i nextCell(this->src.x, i);
-		if(!getGridPiece(nextCell).isOccupied)
-			this->validMoves.push_back(nextCell);
-		else if (getGridPiece(nextCell).player == playerTurn)	// ally
+		if(!determineCellAndShouldContinue(nextCell))
 			break;
-		else{	// enemy
-			this->validMoves.push_back(nextCell);
-			break;
-		}
 	}
 	for(int i = num + 1; i < 8; i++){
 		sf::Vector2i nextCell(this->src.x, i);
-		if(!getGridPiece(nextCell).isOccupied)
-			this->validMoves.push_back(nextCell);
-		else if (getGridPiece(nextCell).player == playerTurn)	// ally
+		if(!determineCellAndShouldContinue(nextCell))
 			break;
-		else{	// enemy
-			this->validMoves.push_back(nextCell);
-			break;
-		}
 	}
 	// horizontal movement
 	num = this->src.x;
 	for(int i = num - 1; i >= 0; i--){
 		sf::Vector2i nextCell(i, this->src.y);
-		if(!getGridPiece(nextCell).isOccupied)
-			this->validMoves.push_back(nextCell);
-		else if (getGridPiece(nextCell).player == playerTurn)	// ally
+		if(!determineCellAndShouldContinue(nextCell))
 			break;
-		else{	// enemy
-			this->validMoves.push_back(nextCell);
-			break;
-		}
 	}
 	for(int i = num + 1; i < 8; i++){
 		sf::Vector2i nextCell(i, this->src.y);
-		if(!getGridPiece(nextCell).isOccupied)
-			this->validMoves.push_back(nextCell);
-		else if (getGridPiece(nextCell).player == playerTurn)	// ally
+		if(!determineCellAndShouldContinue(nextCell))
 			break;
-		else{	// enemy
-			this->validMoves.push_back(nextCell);
-			break;
-		}
 	}
 }
 
 void Board::diagonalMovementsClear()
 {
+	vector<sf::Vector2i> op = {
+		sf::Vector2i(1, 1), 
+		sf::Vector2i(1, -1), 
+		sf::Vector2i(-1, 1), 
+		sf::Vector2i(-1, -1)
+	};
+
+	for(int i = 0; i < op.size(); i++){
+		sf::Vector2i nextCell(this->src.x + op[i].x, this->src.y + op[i].y);
+		while(withinBoard(nextCell)){
+			if(!determineCellAndShouldContinue(nextCell))
+				break;
+			nextCell = sf::Vector2i(nextCell.x + op[i].x, nextCell.y + op[i].y);
+		}
+	}
 }
 
 void Board::pawnMovements()

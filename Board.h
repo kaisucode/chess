@@ -20,6 +20,7 @@ class Board{
 		void executeMove(sf::Vector2i dest);
 		void straightMovementsClear();
 		void diagonalMovementsClear();
+		bool determineCellAndShouldContinue(sf::Vector2i cell);
 		bool withinBoard(sf::Vector2i cell);
 		void mapValidMoves();
 		void pawnMovements();
