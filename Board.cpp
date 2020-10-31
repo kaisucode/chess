@@ -86,60 +86,6 @@ void Board::mapValidMoves(){
 	}
 }
 
-// bool Board::isValidMove(sf::Vector2i dest){
-
-//     ChessPiece chessPiece = this->grid[this->src.y][this->src.x];
-//     ChessPiece destCell = this->grid[dest.y][dest.x];
-
-//     // same cell
-//     if (this->src.y == dest.y && this->src.x == dest.x)
-//         return false;
-//     // out of bounds
-//     else if (dest.y > 7 || dest.y < 0 || dest.x > 7 || dest.x < 0){
-//         return false;
-//     }
-//     // occupied by ally
-//     else if (destCell.isOccupied && destCell.player == chessPiece.player){
-//         return false;
-//     }
-
-//     string chessPieceName = chessPiece.name.erase(0, 6);
-//     if (chessPieceName == "pawn"){
-//         int acc = (chessPiece.player) ? 1 : -1;
-
-//         bool canMoveForward = (this->src.x == dest.x 	// same col
-//                 && (this->src.y + acc == dest.y			// one step forward
-//                     || (firstRound && (this->src.y + 2*acc == dest.y)))	// or two if it's the first round
-//                 && (!this->grid[dest.y][dest.x].isOccupied));			// nothing in front
-
-//         bool canKillDiagonallyForward = ((this->src.y + acc == dest.y)		// one step forward
-//                 && (this->src.x + 1 == dest.x || this->src.x - 1 == dest.x)	// diagonal
-//                 && (this->grid[dest.y][dest.x].isOccupied)					// contains someone
-//                 && (this->grid[dest.y][dest.x].player != playerTurn));		// is the enemy
-//         return (canMoveForward || canKillDiagonallyForward);
-//     }
-//     else if (chessPieceName == "rook"){
-//         return straightMovementsClear();
-//     }
-//     // else if (chessPiece.name == "knight"){
-//     // }
-//     else if (chessPiece.name == "bishop"){
-//         return diagonalMovementsClear(dest);
-//     }
-//     else if (chessPiece.name == "queen"){
-//         return (straightMovementsClear() || diagonalMovementsClear(dest));
-//     }
-//     else if (chessPiece.name == "king"){
-//         int horizontalDifference = this->src.x - dest.x;
-//         int verticalDifference = this->src.y - dest.y;
-//         bool withinOneBlock = (abs(horizontalDifference) <= 1 && abs(verticalDifference) <= 1);
-//         return (withinOneBlock && (straightMovementsClear() || diagonalMovementsClear(dest)));
-//     }
-
-//     cout << "idk what is happening: " << chessPieceName << endl;
-//     return true;
-// }
-
 void Board::setSrc(sf::Vector2i cell)
 {
 	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == playerTurn){

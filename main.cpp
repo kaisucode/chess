@@ -94,6 +94,7 @@ int main()
 	// cursors and highlights
 	sf::RectangleShape cursor = generateOutline(sf::Color(100, 250, 50));
 	sf::RectangleShape srcHighlight = generateOutline(sf::Color(255, 0, 0));
+	sf::RectangleShape destHighlight = generateOutline(sf::Color(100, 250, 50));
 	sf::RectangleShape possibleMovesHighlight(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
 	possibleMovesHighlight.setFillColor(sf::Color(255, 0, 0, 100));
 	
@@ -119,7 +120,10 @@ int main()
 
 			// highlight all valid moves from src piece
 			for (int i = 0; i < board.validMoves.size(); i++) {
-				renderOutline(window, possibleMovesHighlight, board.validMoves[i]);
+				if (board.validMoves[i].x == mouseCell.x && board.validMoves[i].y == mouseCell.y)
+					renderOutline(window, destHighlight, board.validMoves[i]);
+				else
+					renderOutline(window, possibleMovesHighlight, board.validMoves[i]);
 			}
 
 			// highlight destination if move valid

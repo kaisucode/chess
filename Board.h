@@ -16,7 +16,6 @@ class Board{
 		bool firstRound;
 		Board();
 		void setSrc(sf::Vector2i cell);
-		// bool isValidMove(sf::Vector2i dest);
 		void executeMove(sf::Vector2i dest);
 		void straightMovementsClear();
 		void diagonalMovementsClear();
