@@ -55,13 +55,11 @@ ChessPiece Board::getGridPiece(sf::Vector2i cell){
 void Board::setSrc(sf::Vector2i cell)
 {
 	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == playerTurn){
-		this->srcIsSet = true;
 		this->src = cell;
 		this->validMoves.clear();
 		mapValidMoves();
-
-		if (this->validMoves.size() == 0)
-			this->srcIsSet = false;
+		if (this->validMoves.size())
+			this->srcIsSet = true;
 	}
 }
 
@@ -88,22 +86,7 @@ void Board::mapValidMoves(){
 		straightMovements();
 	}
 	else if (chessPiece.name == "knight"){
-		vector<sf::Vector2i> destDeltas = {
-			sf::Vector2i(-2, 1), 
-			sf::Vector2i(-2, -1), 
-			sf::Vector2i(2, 1), 
-			sf::Vector2i(2, -1), 
-			sf::Vector2i(-1, -2), 
-			sf::Vector2i(1, -2), 
-			sf::Vector2i(1, 2), 
-			sf::Vector2i(-1, 2), 
-		};
-
-		for(int i = 0; i < destDeltas.size(); i++){
-			sf::Vector2i newDest(this->src + destDeltas[i]);
-			if (withinBoard(newDest) && (!getGridPiece(newDest).isOccupied || getGridPiece(newDest).player != playerTurn))
-				this->validMoves.push_back(newDest);
-		}
+		knightMovements();
 	}
 	else if (chessPiece.name == "bishop"){
 		diagonalMovements();
@@ -113,15 +96,7 @@ void Board::mapValidMoves(){
 		diagonalMovements();
 	}
 	else if (chessPiece.name == "king"){
-		for(int i = -1; i <= 1; i++){
-			for(int j = -1; j <= 1; j++){
-				sf::Vector2i nextCell(this->src.x + i, this->src.y + j);
-				if (i == 0 && j == 0)
-					continue;
-				else if(withinBoard(nextCell))
-					determineCellAndShouldContinue(nextCell);
-			}
-		}
+		kingMovements();
 	}
 }
 
@@ -211,3 +186,33 @@ void Board::pawnMovements()
 	}
 }
 
+void Board::knightMovements(){
+	vector<sf::Vector2i> destDeltas = {
+		sf::Vector2i(-2, 1), 
+		sf::Vector2i(-2, -1), 
+		sf::Vector2i(2, 1), 
+		sf::Vector2i(2, -1), 
+		sf::Vector2i(-1, -2), 
+		sf::Vector2i(1, -2), 
+		sf::Vector2i(1, 2), 
+		sf::Vector2i(-1, 2), 
+	};
+
+	for(int i = 0; i < destDeltas.size(); i++){
+		sf::Vector2i newDest(this->src + destDeltas[i]);
+		if (withinBoard(newDest) && (!getGridPiece(newDest).isOccupied || getGridPiece(newDest).player != playerTurn))
+			this->validMoves.push_back(newDest);
+	}
+}
+
+void Board::kingMovements(){
+	for(int i = -1; i <= 1; i++){
+		for(int j = -1; j <= 1; j++){
+			sf::Vector2i nextCell(this->src.x + i, this->src.y + j);
+			if (i == 0 && j == 0)
+				continue;
+			else if(withinBoard(nextCell))
+				determineCellAndShouldContinue(nextCell);
+		}
+	}
+}

@@ -15,13 +15,15 @@ class Board{
 		bool srcIsSet;
 		bool firstRound;
 		Board();
+		bool withinBoard(sf::Vector2i cell);
+		bool determineCellAndShouldContinue(sf::Vector2i cell);
 		void setSrc(sf::Vector2i cell);
 		void executeMove(sf::Vector2i dest);
+		void mapValidMoves();
 		void straightMovements();
 		void diagonalMovements();
-		bool determineCellAndShouldContinue(sf::Vector2i cell);
-		bool withinBoard(sf::Vector2i cell);
-		void mapValidMoves();
 		void pawnMovements();
+		void knightMovements();
+		void kingMovements();
 		ChessPiece getGridPiece(sf::Vector2i cell);
 };
