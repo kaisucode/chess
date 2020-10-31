@@ -142,7 +142,7 @@ int main()
 				board.executeMove(mouseCell);
 			}
 		}
-		else if (board.grid[mouseCell.y][mouseCell.x].player == board.playerTurn)	// selecte piece to control
+		else if (board.grid[mouseCell.y][mouseCell.x].player == board.playerTurn)	// select piece to control
 			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){

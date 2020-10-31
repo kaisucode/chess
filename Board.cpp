@@ -52,6 +52,31 @@ ChessPiece Board::getGridPiece(sf::Vector2i cell){
 	return this->grid[cell.y][cell.x];
 }
 
+void Board::setSrc(sf::Vector2i cell)
+{
+	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == playerTurn){
+		this->srcIsSet = true;
+		this->src = cell;
+		this->validMoves.clear();
+		mapValidMoves();
+
+		if (this->validMoves.size() == 0)
+			this->srcIsSet = false;
+	}
+}
+
+void Board::executeMove(sf::Vector2i dest)
+{
+	// cout << "move executing" << endl;
+	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
+	this->grid[this->src.y][this->src.x] = ChessPiece();
+	this->srcIsSet = false;
+	if(playerTurn)	// end of round
+		this->firstRound = false;
+	// this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
+	this->firstRound = false; // comment this out when player turns are reactivated
+}
+
 void Board::mapValidMoves(){
 	ChessPiece chessPiece = getGridPiece(this->src);
 	string chessPieceName = chessPiece.name.erase(0, 6);
@@ -98,28 +123,6 @@ void Board::mapValidMoves(){
 			}
 		}
 	}
-}
-
-void Board::setSrc(sf::Vector2i cell)
-{
-	if(this->grid[cell.y][cell.x].isOccupied && this->grid[cell.y][cell.x].player == playerTurn){
-		this->srcIsSet = true;
-		this->src = cell;
-		this->validMoves.clear();
-		mapValidMoves();
-	}
-}
-
-void Board::executeMove(sf::Vector2i dest)
-{
-	// cout << "move executing" << endl;
-	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
-	this->grid[this->src.y][this->src.x] = ChessPiece();
-	this->srcIsSet = false;
-	if(playerTurn)	// end of round
-		this->firstRound = false;
-	// this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
-	this->firstRound = false; // comment this out when player turns are reactivated
 }
 
 bool Board::determineCellAndShouldContinue(sf::Vector2i cell){
