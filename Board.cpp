@@ -60,16 +60,32 @@ void Board::mapValidMoves(){
 		pawnMovements();
 	}
 	else if (chessPieceName == "rook"){
-		straightMovementsClear();
+		straightMovements();
 	}
-	// else if (chessPiece.name == "knight"){
-	// }
+	else if (chessPiece.name == "knight"){
+		vector<sf::Vector2i> destDeltas = {
+			sf::Vector2i(-2, 1), 
+			sf::Vector2i(-2, -1), 
+			sf::Vector2i(2, 1), 
+			sf::Vector2i(2, -1), 
+			sf::Vector2i(-1, -2), 
+			sf::Vector2i(1, -2), 
+			sf::Vector2i(1, 2), 
+			sf::Vector2i(-1, 2), 
+		};
+
+		for(int i = 0; i < destDeltas.size(); i++){
+			sf::Vector2i newDest(this->src + destDeltas[i]);
+			if (withinBoard(newDest) && (!getGridPiece(newDest).isOccupied || getGridPiece(newDest).player != playerTurn))
+				this->validMoves.push_back(newDest);
+		}
+	}
 	else if (chessPiece.name == "bishop"){
-		diagonalMovementsClear();
+		diagonalMovements();
 	}
 	else if (chessPiece.name == "queen"){
-		straightMovementsClear();
-		diagonalMovementsClear();
+		straightMovements();
+		diagonalMovements();
 	}
 	else if (chessPiece.name == "king"){
 		for(int i = -1; i <= 1; i++){
@@ -96,13 +112,14 @@ void Board::setSrc(sf::Vector2i cell)
 
 void Board::executeMove(sf::Vector2i dest)
 {
-	cout << "move executing" << endl;
+	// cout << "move executing" << endl;
 	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
 	this->grid[this->src.y][this->src.x] = ChessPiece();
 	this->srcIsSet = false;
 	if(playerTurn)	// end of round
 		this->firstRound = false;
-	this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
+	// this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
+	this->firstRound = false; // comment this out when player turns are reactivated
 }
 
 bool Board::determineCellAndShouldContinue(sf::Vector2i cell){
@@ -115,7 +132,7 @@ bool Board::determineCellAndShouldContinue(sf::Vector2i cell){
 	return false;											// ally
 }
 
-void Board::straightMovementsClear()
+void Board::straightMovements()
 {
 	// vertical movement
 	int num = this->src.y;
@@ -143,7 +160,7 @@ void Board::straightMovementsClear()
 	}
 }
 
-void Board::diagonalMovementsClear()
+void Board::diagonalMovements()
 {
 	vector<sf::Vector2i> op = {
 		sf::Vector2i(1, 1), 
