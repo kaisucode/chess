@@ -44,6 +44,16 @@ Board::Board(){
 	}
 }
 
+void Board::mapValidMoves(){
+	ChessPiece chessPiece = this->grid[this->src.y][this->src.x];
+	string chessPieceName = chessPiece.name.erase(0, 6);
+
+	if (chessPieceName == "rook"){
+		straightMovementsClear();
+	}
+
+}
+
 bool Board::isValidMove(sf::Vector2i dest){
 
 	ChessPiece chessPiece = this->grid[this->src.y][this->src.x];
@@ -77,7 +87,7 @@ bool Board::isValidMove(sf::Vector2i dest){
 		return (canMoveForward || canKillDiagonallyForward);
 	}
 	else if (chessPieceName == "rook"){
-		return straightMovementsClear(dest);
+		return straightMovementsClear();
 	}
 	// else if (chessPiece.name == "knight"){
 	// }
@@ -85,13 +95,13 @@ bool Board::isValidMove(sf::Vector2i dest){
 		return diagonalMovementsClear(dest);
 	}
 	else if (chessPiece.name == "queen"){
-			return (straightMovementsClear(dest) || diagonalMovementsClear(dest));
+		return (straightMovementsClear() || diagonalMovementsClear(dest));
 	}
 	else if (chessPiece.name == "king"){
 		int horizontalDifference = this->src.x - dest.x;
 		int verticalDifference = this->src.y - dest.y;
 		bool withinOneBlock = (abs(horizontalDifference) <= 1 && abs(verticalDifference) <= 1);
-		return (withinOneBlock && (straightMovementsClear(dest) || diagonalMovementsClear(dest)));
+		return (withinOneBlock && (straightMovementsClear() || diagonalMovementsClear(dest)));
 	}
 
 	cout << "idk what is happening: " << chessPieceName << endl;
@@ -104,6 +114,8 @@ void Board::setSrc(sf::Vector2i cell)
 		this->srcIsSet = true;
 		this->src = cell;
 	}
+	this->validMoves.clear();
+	mapValidMoves();
 }
 
 void Board::executeMove(sf::Vector2i dest)
@@ -116,34 +128,52 @@ void Board::executeMove(sf::Vector2i dest)
 	// this->playerTurn = !this->playerTurn;
 }
 
-bool Board::straightMovementsClear(sf::Vector2i dest)
+bool Board::straightMovementsClear()
 {
-	if (this->src.y != dest.y && this->src.x != dest.x)
-		return false;
-	else if(this->src.y == dest.y)
-	{
-		int val = (dest.x - this->src.x) > 0 ? 1 : -1;
-		int start = min(this->src.x + val, dest.x);
-		int end = max(this->src.x + val, dest.x);
-		for(int i = start; i <= end; i++)
-		{
-			if(this->grid[this->src.y][i].isOccupied && this->grid[this->src.y][i].player == playerTurn)
-				return false;
+	// vertical movement
+	int num = this->src.y;
+	for(int i = num - 1; i >= 0; i--){
+		if(!this->grid[i][this->src.x].isOccupied)
+			this->validMoves.push_back(sf::Vector2i(this->src.x, i));
+		else if (this->grid[i][this->src.x].player == playerTurn)	// ally
+			break;
+		else{	// enemy
+			this->validMoves.push_back(sf::Vector2i(this->src.x, i));
+			break;
 		}
 	}
-	else if(this->src.x == dest.x)
-	{
-		int val = (dest.y - this->src.y) > 0 ? 1 : -1;
-		int start = min(this->src.y + val, dest.y);
-		int end = max(this->src.y + val, dest.y);
-
-		for(int i = start; i <= end; i++)
-		{
-			if(this->grid[i][this->src.x].isOccupied && this->grid[i][this->src.x].player == playerTurn)
-				return false;
+	for(int i = num + 1; i < 8; i++){
+		if(!this->grid[i][this->src.x].isOccupied)
+			this->validMoves.push_back(sf::Vector2i(this->src.x, i));
+		else if (this->grid[i][this->src.x].player == playerTurn)	// ally
+			break;
+		else{	// enemy
+			this->validMoves.push_back(sf::Vector2i(this->src.x, i));
+			break;
 		}
 	}
-	return true;
+	// horizontal movement
+	num = this->src.x;
+	for(int i = num - 1; i >= 0; i--){
+		if(!this->grid[this->src.y][i].isOccupied)
+			this->validMoves.push_back(sf::Vector2i(i, this->src.y));
+		else if (this->grid[this->src.y][i].player == playerTurn)	// ally
+			break;
+		else{	// enemy
+			this->validMoves.push_back(sf::Vector2i(i, this->src.y));
+			break;
+		}
+	}
+	for(int i = num + 1; i < 8; i++){
+		if(!this->grid[this->src.y][i].isOccupied)
+			this->validMoves.push_back(sf::Vector2i(i, this->src.y));
+		else if (this->grid[this->src.y][i].player == playerTurn)	// ally
+			break;
+		else{	// enemy
+			this->validMoves.push_back(sf::Vector2i(i, this->src.y));
+			break;
+		}
+	}
 }
 
 bool Board::diagonalMovementsClear(sf::Vector2i dest)
@@ -161,7 +191,7 @@ bool Board::diagonalMovementsClear(sf::Vector2i dest)
 	}
 	else
 		return false;
-	
+
 	return true;
 }
 

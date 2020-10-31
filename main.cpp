@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <set>
 
 #include "constants.h"
 #include "Board.h"
@@ -90,9 +91,12 @@ int main()
 	// create board
 	Board board = Board();
 
+	// cursors and highlights
 	sf::RectangleShape cursor = generateOutline(sf::Color(100, 250, 50));
 	sf::RectangleShape srcHighlight = generateOutline(sf::Color(255, 0, 0));
-
+	sf::RectangleShape possibleMovesHighlight(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
+	possibleMovesHighlight.setFillColor(sf::Color(255, 0, 0, 100));
+	
     // run the program as long as the window is open
     while (window.isOpen())
     {
@@ -113,15 +117,20 @@ int main()
 		{
 			renderOutline(window, srcHighlight, board.src);
 
+			// highlight all valid moves from src piece
+			for (int i = 0; i < board.validMoves.size(); i++) {
+				renderOutline(window, possibleMovesHighlight, board.validMoves[i]);
+			}
+
 			// highlight destination if move valid
-			if(board.isValidMove(mouseCell)){
-				renderOutline(window, cursor, mouseCell);
+			// if(board.isValidMove(mouseCell)){
+			//     renderOutline(window, cursor, mouseCell);
 
 				// left mouse pressed then execute move
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
 					board.executeMove(mouseCell);
 				}
-			}
+			// }
 		}
 		else if (board.grid[mouseCell.y][mouseCell.x].player == board.playerTurn)	// selecte piece to control
 			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));

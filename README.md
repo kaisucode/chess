@@ -1,5 +1,6 @@
 
 ## TODO
+- [ ] highlight blocks that are valid moves without hovering over them
 - [ ] don't allow pieces to jump over enemies
 - [ ] don't allow selection if no more moves
 - [ ] Diagonal movement
