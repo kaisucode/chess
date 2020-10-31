@@ -71,8 +71,9 @@ void Board::executeMove(sf::Vector2i dest)
 	this->srcIsSet = false;
 	if(playerTurn)	// end of round
 		this->firstRound = false;
-	// this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
-	this->firstRound = false; // comment this out when player turns are reactivated
+
+	this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
+	// this->firstRound = false; // comment this out when player turns are reactivated
 }
 
 void Board::mapValidMoves(){
