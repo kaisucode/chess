@@ -79,8 +79,6 @@ void Board::mapValidMoves(){
 					continue;
 				else if(withinBoard(nextCell))
 					determineCellAndShouldContinue(nextCell);
-				else
-					break;
 			}
 		}
 	}
@@ -102,8 +100,9 @@ void Board::executeMove(sf::Vector2i dest)
 	this->grid[dest.y][dest.x] = this->grid[this->src.y][this->src.x];
 	this->grid[this->src.y][this->src.x] = ChessPiece();
 	this->srcIsSet = false;
-	this->firstRound = false;
-	// this->playerTurn = !this->playerTurn;
+	if(playerTurn)	// end of round
+		this->firstRound = false;
+	this->playerTurn = !this->playerTurn; // don't change order of this line and the one above
 }
 
 bool Board::determineCellAndShouldContinue(sf::Vector2i cell){

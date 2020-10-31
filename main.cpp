@@ -8,6 +8,12 @@
 #include "ResourceHolder.h"
 using namespace std;
 
+sf::Color GREEN(100, 250, 50);
+sf::Color RED(255, 0, 0);
+
+sf::Color GREEN_ALPHA(100, 250, 50, 100);
+sf::Color RED_ALPHA(255, 0, 0, 100);
+
 vector<string> generateChessPieceNames(string color)
 {
 	vector<string> chessPieceNames = {"king", "queen", "bishop", "knight", "rook", "pawn"};
@@ -92,11 +98,16 @@ int main()
 	Board board = Board();
 
 	// cursors and highlights
-	sf::RectangleShape cursor = generateOutline(sf::Color(100, 250, 50));
-	sf::RectangleShape srcHighlight = generateOutline(sf::Color(255, 0, 0));
-	sf::RectangleShape destHighlight = generateOutline(sf::Color(100, 250, 50));
+	sf::RectangleShape cursor = generateOutline(GREEN);
+	sf::RectangleShape srcHighlight = generateOutline(RED);
+
+
+	// sf::RectangleShape destHighlight(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
+	// destHighlight.setFillColor(sf::Color(100, 250, 50, 100));
+	sf::RectangleShape destHighlight = generateOutline(GREEN);
+
 	sf::RectangleShape possibleMovesHighlight(sf::Vector2f(CELL_SIZE * SCALE, CELL_SIZE * SCALE));
-	possibleMovesHighlight.setFillColor(sf::Color(255, 0, 0, 100));
+	possibleMovesHighlight.setFillColor(RED_ALPHA);
 	
     // run the program as long as the window is open
     while (window.isOpen())
@@ -120,22 +131,16 @@ int main()
 
 			// highlight all valid moves from src piece
 			for (int i = 0; i < board.validMoves.size(); i++) {
-				if (board.validMoves[i].x == mouseCell.x && board.validMoves[i].y == mouseCell.y)
+				if (board.validMoves[i] == mouseCell)
 					renderOutline(window, destHighlight, board.validMoves[i]);
-				else
-					renderOutline(window, possibleMovesHighlight, board.validMoves[i]);
+				renderOutline(window, possibleMovesHighlight, board.validMoves[i]);
 			}
 
-			// highlight destination if move valid
-			// if(board.isValidMove(mouseCell)){
-			//     renderOutline(window, cursor, mouseCell);
-
-				// right mouse pressed then execute move
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-					if (find(board.validMoves.begin(), board.validMoves.end(), mouseCell) != board.validMoves.end())
-						board.executeMove(mouseCell);
-				}
-			// }
+			// right mouse pressed then execute move
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Right) 
+					&& (find(board.validMoves.begin(), board.validMoves.end(), mouseCell) != board.validMoves.end())){
+				board.executeMove(mouseCell);
+			}
 		}
 		else if (board.grid[mouseCell.y][mouseCell.x].player == board.playerTurn)	// selecte piece to control
 			renderOutline(window, cursor, coorToCells(sf::Mouse::getPosition(window)));
